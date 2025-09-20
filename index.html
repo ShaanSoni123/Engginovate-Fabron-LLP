@@ -6,6 +6,10 @@
     <title>Engginovate Fabaron LLP - Coming Soon</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -15,12 +19,20 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
 
         .container {
@@ -29,6 +41,12 @@
             padding: 2rem;
             text-align: center;
             position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .construction-bg {
@@ -41,6 +59,7 @@
             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="construction" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="none" stroke="white" stroke-width="0.5"/><line x1="0" y1="0" x2="20" y2="20" stroke="white" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23construction)"/></svg>');
             pointer-events: none;
         }
+
 
         .logo {
             margin-bottom: 2rem;
@@ -70,30 +89,59 @@
         }
 
         .main-content {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             padding: 3rem 2rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             animation: fadeInUp 1s ease-out 0.3s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .main-title {
             font-size: 3rem;
             font-weight: 700;
-            color: #2d3748;
+            color: white;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #00d4ff, #ff00ff, #ffff00);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .subtitle {
             font-size: 1.3rem;
-            color: #4a5568;
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 2rem;
             line-height: 1.6;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .coming-soon-section {
@@ -122,7 +170,7 @@
 
         .coming-soon-text {
             font-size: 1.1rem;
-            color: #4a5568;
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
             max-width: 600px;
             margin: 0 auto;
@@ -136,45 +184,79 @@
         }
 
         .feature-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .feature-icon {
             font-size: 2.5rem;
-            color: #667eea;
+            color: #00d4ff;
             margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
         }
 
         .feature-title {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #2d3748;
+            color: white;
             margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
         }
 
         .feature-desc {
-            color: #718096;
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.5;
+            position: relative;
+            z-index: 1;
         }
 
         .contact-section {
             margin-top: 3rem;
             padding-top: 2rem;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .contact-title {
             font-size: 1.5rem;
-            color: #2d3748;
+            color: white;
             margin-bottom: 1rem;
             font-weight: 600;
         }
@@ -191,12 +273,12 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #4a5568;
+            color: rgba(255, 255, 255, 0.9);
             font-size: 1rem;
         }
 
         .contact-item i {
-            color: #667eea;
+            color: #00d4ff;
         }
 
         .social-links {
@@ -333,18 +415,140 @@
                 flex-direction: column;
                 gap: 1rem;
             }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Performance optimizations for mobile */
+        @media (max-width: 768px) {
+            #three-canvas {
+                transform: scale(0.8);
+            }
+        }
+
+        /* Holographic UI Elements */
+        .holographic-panel {
+            position: absolute;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            animation: hologramFlicker 2s infinite alternate;
+            z-index: 10;
+        }
+
+        @keyframes hologramFlicker {
+            0% { opacity: 0.7; border-color: rgba(0, 212, 255, 0.3); }
+            50% { opacity: 1; border-color: rgba(0, 212, 255, 0.6); }
+            100% { opacity: 0.8; border-color: rgba(255, 0, 255, 0.4); }
+        }
+
+        .neural-network-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .quantum-portal {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,0,255,0.3), transparent);
+            animation: quantumPulse 3s infinite;
+            z-index: -1;
+        }
+
+        @keyframes quantumPulse {
+            0% { transform: scale(0.8) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.7; }
+            100% { transform: scale(0.8) rotate(360deg); opacity: 0.3; }
+        }
+
+        .engineering-hud {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            height: 200px;
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 5px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            font-size: 12px;
+            z-index: 100;
+            animation: hudScan 4s infinite;
+        }
+
+        @keyframes hudScan {
+            0% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.6); }
+            100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); }
+        }
+
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -3;
+            opacity: 0.1;
         }
     </style>
 </head>
 <body>
-    <div class="floating-elements">
-        <i class="fas fa-hard-hat floating-element" style="font-size: 3rem;"></i>
-        <i class="fas fa-tools floating-element" style="font-size: 2.5rem;"></i>
-        <i class="fas fa-cog floating-element" style="font-size: 2rem;"></i>
-        <i class="fas fa-hammer floating-element" style="font-size: 2.8rem;"></i>
+    <canvas id="three-canvas"></canvas>
+    <canvas class="matrix-rain" id="matrix-canvas"></canvas>
+    <canvas class="neural-network-bg" id="neural-canvas"></canvas>
+    
+    <!-- Engineering HUD -->
+    <div class="engineering-hud">
+        <div style="color: #00ff00; font-weight: bold;">ENGGINOVATE SYSTEMS</div>
+        <div>STATUS: <span style="color: #00ff00;">ONLINE</span></div>
+        <div>PARTICLES: <span id="particle-count">1000</span></div>
+        <div>PERFORMANCE: <span id="fps-counter">60</span> FPS</div>
+        <div>NEURAL ACTIVITY: <span id="neural-activity">ACTIVE</span></div>
+        <div style="margin-top: 10px; color: #00d4ff;">3D ENGINE: INITIALIZED</div>
+        <div>QUANTUM FIELD: <span style="color: #ff00ff;">STABLE</span></div>
     </div>
 
-    <div class="construction-bg"></div>
+    <!-- Quantum Portals -->
+    <div class="quantum-portal" style="top: 10%; left: 5%;"></div>
+    <div class="quantum-portal" style="bottom: 15%; right: 8%;"></div>
+    
+    <!-- Holographic Panels -->
+    <div class="holographic-panel" style="top: 60%; left: 10%; width: 200px;">
+        <div style="color: #00d4ff; font-size: 14px;">INNOVATION LAB</div>
+        <div style="color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 5px;">
+            Advanced Engineering<br>
+            Quantum Computing<br>
+            AI Integration
+        </div>
+    </div>
+
+    <div class="holographic-panel" style="top: 20%; right: 15%; width: 180px;">
+        <div style="color: #ff00ff; font-size: 14px;">PROJECT STATUS</div>
+        <div style="color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 5px;">
+            WEBSITE: 95% COMPLETE<br>
+            3D ENGINE: ACTIVE<br>
+            NEURAL NET: LEARNING
+        </div>
+    </div>
     
     <div class="container">
         <div class="logo">
@@ -434,28 +638,628 @@
     </div>
 
     <script>
-        // Add some interactive elements
+        // Advanced Engineering 3D Experience
+        let scene, camera, renderer, particles, geometries = [];
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+        
+        // Advanced systems
+        let neuralNetwork, dnaHelix, quantumField, engineeringModels = [];
+        let matrixCanvas, neuralCanvas, matrixCtx, neuralCtx;
+        let audioContext, analyser, dataArray;
+        let frameCount = 0, fpsCounter = 0, lastTime = 0;
+
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 50;
+            
+            // Create renderer with advanced settings
+            renderer = new THREE.WebGLRenderer({
+                canvas: document.getElementById('three-canvas'),
+                antialias: true,
+                alpha: true,
+                powerPreference: "high-performance"
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            
+            // Initialize all systems
+            initializeCanvases();
+            createAdvancedParticleSystem();
+            createDNAHelix();
+            createNeuralNetwork();
+            createQuantumField();
+            createEngineeringModels();
+            addAdvancedLights();
+            initializeAudio();
+            
+            // Add event listeners
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            document.addEventListener('click', onDocumentClick, false);
+            window.addEventListener('resize', onWindowResize, false);
+            
+            // Start all animations
+            animate();
+            animateMatrix();
+            animateNeuralNetwork();
+        }
+
+        function initializeCanvases() {
+            // Matrix rain canvas
+            matrixCanvas = document.getElementById('matrix-canvas');
+            matrixCtx = matrixCanvas.getContext('2d');
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+            
+            // Neural network canvas
+            neuralCanvas = document.getElementById('neural-canvas');
+            neuralCtx = neuralCanvas.getContext('2d');
+            neuralCanvas.width = window.innerWidth;
+            neuralCanvas.height = window.innerHeight;
+        }
+
+        function createAdvancedParticleSystem() {
+            const isMobile = window.innerWidth < 768;
+            const particleCount = isMobile ? 500 : 2000;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 300;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 300;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 300;
+                
+                const color = new THREE.Color();
+                const hue = Math.random() * 0.4 + 0.5;
+                color.setHSL(hue, 1, 0.5 + Math.random() * 0.5);
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+                
+                sizes[i] = Math.random() * 3 + 1;
+            }
+            
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            particles.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 3,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+            
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            scene.add(particleSystem);
+            window.particleSystem = particleSystem;
+            
+            document.getElementById('particle-count').textContent = particleCount;
+        }
+
+        function createDNAHelix() {
+            const helixGroup = new THREE.Group();
+            const radius = 5;
+            const height = 30;
+            const segments = 100;
+            
+            for (let i = 0; i < segments; i++) {
+                const y = (i / segments) * height - height / 2;
+                const angle = (i / segments) * Math.PI * 8;
+                
+                // First strand
+                const sphere1 = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.3, 8, 8),
+                    new THREE.MeshPhongMaterial({
+                        color: 0x00d4ff,
+                        transparent: true,
+                        opacity: 0.8,
+                        emissive: 0x001122
+                    })
+                );
+                sphere1.position.set(
+                    Math.cos(angle) * radius,
+                    y,
+                    Math.sin(angle) * radius
+                );
+                helixGroup.add(sphere1);
+                
+                // Second strand
+                const sphere2 = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.3, 8, 8),
+                    new THREE.MeshPhongMaterial({
+                        color: 0xff00ff,
+                        transparent: true,
+                        opacity: 0.8,
+                        emissive: 0x220011
+                    })
+                );
+                sphere2.position.set(
+                    Math.cos(angle + Math.PI) * radius,
+                    y,
+                    Math.sin(angle + Math.PI) * radius
+                );
+                helixGroup.add(sphere2);
+                
+                // Connecting lines
+                if (i % 10 === 0) {
+                    const geometry = new THREE.BufferGeometry().setFromPoints([
+                        sphere1.position, sphere2.position
+                    ]);
+                    const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({
+                        color: 0xffff00,
+                        transparent: true,
+                        opacity: 0.6
+                    }));
+                    helixGroup.add(line);
+                }
+            }
+            
+            helixGroup.position.set(-30, 0, -20);
+            scene.add(helixGroup);
+            dnaHelix = helixGroup;
+        }
+
+        function createNeuralNetwork() {
+            const networkGroup = new THREE.Group();
+            const nodes = [];
+            const nodeCount = 20;
+            
+            // Create nodes
+            for (let i = 0; i < nodeCount; i++) {
+                const node = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.5, 16, 16),
+                    new THREE.MeshPhongMaterial({
+                        color: new THREE.Color().setHSL(Math.random() * 0.3 + 0.5, 1, 0.7),
+                        transparent: true,
+                        opacity: 0.8,
+                        emissive: 0x111111
+                    })
+                );
+                
+                node.position.set(
+                    (Math.random() - 0.5) * 40,
+                    (Math.random() - 0.5) * 40,
+                    (Math.random() - 0.5) * 20
+                );
+                
+                networkGroup.add(node);
+                nodes.push(node);
+            }
+            
+            // Create connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    if (Math.random() > 0.7) {
+                        const geometry = new THREE.BufferGeometry().setFromPoints([
+                            nodes[i].position, nodes[j].position
+                        ]);
+                        const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({
+                            color: 0x00ff00,
+                            transparent: true,
+                            opacity: 0.3
+                        }));
+                        networkGroup.add(line);
+                    }
+                }
+            }
+            
+            networkGroup.position.set(30, 20, -10);
+            scene.add(networkGroup);
+            neuralNetwork = networkGroup;
+        }
+
+        function createQuantumField() {
+            const fieldGroup = new THREE.Group();
+            const gridSize = 20;
+            
+            for (let x = -gridSize; x <= gridSize; x += 4) {
+                for (let z = -gridSize; z <= gridSize; z += 4) {
+                    const wave = new THREE.Mesh(
+                        new THREE.PlaneGeometry(2, 2),
+                        new THREE.MeshPhongMaterial({
+                            color: 0xff00ff,
+                            transparent: true,
+                            opacity: 0.3,
+                            side: THREE.DoubleSide,
+                            wireframe: true
+                        })
+                    );
+                    wave.position.set(x, -20, z);
+                    wave.rotation.x = -Math.PI / 2;
+                    fieldGroup.add(wave);
+                }
+            }
+            
+            scene.add(fieldGroup);
+            quantumField = fieldGroup;
+        }
+
+        function createEngineeringModels() {
+            // Rotating gear system
+            const gearGroup = new THREE.Group();
+            
+            for (let i = 0; i < 3; i++) {
+                const gear = new THREE.Mesh(
+                    new THREE.CylinderGeometry(3 + i, 3 + i, 1, 16),
+                    new THREE.MeshPhongMaterial({
+                        color: new THREE.Color().setHSL(0.1 + i * 0.2, 1, 0.6),
+                        transparent: true,
+                        opacity: 0.8
+                    })
+                );
+                gear.position.set(i * 8 - 8, 0, 30);
+                gear.userData = { rotationSpeed: (i + 1) * 0.02 };
+                gearGroup.add(gear);
+                engineeringModels.push(gear);
+            }
+            
+            scene.add(gearGroup);
+            
+            // Molecular structure
+            const moleculeGroup = new THREE.Group();
+            const atomPositions = [
+                [0, 0, 0], [3, 0, 0], [-3, 0, 0], [0, 3, 0], [0, -3, 0], [0, 0, 3], [0, 0, -3]
+            ];
+            
+            atomPositions.forEach((pos, i) => {
+                const atom = new THREE.Mesh(
+                    new THREE.SphereGeometry(1, 16, 16),
+                    new THREE.MeshPhongMaterial({
+                        color: i === 0 ? 0xff0000 : 0x0088ff,
+                        transparent: true,
+                        opacity: 0.9
+                    })
+                );
+                atom.position.set(pos[0], pos[1], pos[2]);
+                moleculeGroup.add(atom);
+                
+                if (i > 0) {
+                    const geometry = new THREE.BufferGeometry().setFromPoints([
+                        new THREE.Vector3(0, 0, 0), new THREE.Vector3(pos[0], pos[1], pos[2])
+                    ]);
+                    const bond = new THREE.Line(geometry, new THREE.LineBasicMaterial({
+                        color: 0xffffff,
+                        transparent: true,
+                        opacity: 0.8
+                    }));
+                    moleculeGroup.add(bond);
+                }
+            });
+            
+            moleculeGroup.position.set(-40, 15, 10);
+            scene.add(moleculeGroup);
+            engineeringModels.push(moleculeGroup);
+        }
+
+        function addAdvancedLights() {
+            // Enhanced ambient light
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+            scene.add(ambientLight);
+            
+            // Main directional light with shadows
+            const directionalLight = new THREE.DirectionalLight(0x00d4ff, 1.5);
+            directionalLight.position.set(50, 50, 50);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            scene.add(directionalLight);
+            
+            // Animated colored lights
+            const colors = [0xff00ff, 0x00ff00, 0xffff00, 0xff0080, 0x0080ff];
+            for (let i = 0; i < 5; i++) {
+                const light = new THREE.PointLight(colors[i], 2, 150);
+                light.position.set(
+                    Math.cos(i * Math.PI * 2 / 5) * 60,
+                    Math.sin(i * Math.PI * 2 / 5) * 30,
+                    25
+                );
+                light.userData = { 
+                    originalPosition: light.position.clone(),
+                    phase: i * Math.PI * 2 / 5
+                };
+                scene.add(light);
+                geometries.push(light);
+            }
+        }
+
+        function initializeAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            } catch (e) {
+                console.log('Audio context not supported');
+            }
+        }
+
+        function animateMatrix() {
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const columns = Math.floor(matrixCanvas.width / 20);
+            const drops = Array(columns).fill(1);
+            
+            function drawMatrix() {
+                matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+                
+                matrixCtx.fillStyle = '#00ff00';
+                matrixCtx.font = '15px monospace';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    matrixCtx.fillText(text, i * 20, drops[i] * 20);
+                    
+                    if (drops[i] * 20 > matrixCanvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+                
+                requestAnimationFrame(drawMatrix);
+            }
+            drawMatrix();
+        }
+
+        function animateNeuralNetwork() {
+            const nodes = [];
+            const connections = [];
+            
+            for (let i = 0; i < 50; i++) {
+                nodes.push({
+                    x: Math.random() * neuralCanvas.width,
+                    y: Math.random() * neuralCanvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    energy: Math.random()
+                });
+            }
+            
+            function drawNeuralNet() {
+                neuralCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                neuralCtx.fillRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+                
+                // Update and draw nodes
+                nodes.forEach(node => {
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    node.energy += (Math.random() - 0.5) * 0.1;
+                    node.energy = Math.max(0, Math.min(1, node.energy));
+                    
+                    if (node.x < 0 || node.x > neuralCanvas.width) node.vx *= -1;
+                    if (node.y < 0 || node.y > neuralCanvas.height) node.vy *= -1;
+                    
+                    const intensity = Math.floor(node.energy * 255);
+                    neuralCtx.fillStyle = `rgb(${intensity}, ${intensity}, 255)`;
+                    neuralCtx.beginPath();
+                    neuralCtx.arc(node.x, node.y, 3 + node.energy * 5, 0, Math.PI * 2);
+                    neuralCtx.fill();
+                });
+                
+                // Draw connections
+                neuralCtx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+                neuralCtx.lineWidth = 1;
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const dx = nodes[i].x - nodes[j].x;
+                        const dy = nodes[i].y - nodes[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 100 && Math.random() > 0.95) {
+                            neuralCtx.beginPath();
+                            neuralCtx.moveTo(nodes[i].x, nodes[i].y);
+                            neuralCtx.lineTo(nodes[j].x, nodes[j].y);
+                            neuralCtx.stroke();
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(drawNeuralNet);
+            }
+            drawNeuralNet();
+        }
+
+        function onDocumentMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX) * 0.1;
+            mouseY = (event.clientY - windowHalfY) * 0.1;
+        }
+
+        function onDocumentClick(event) {
+            // Create explosion effect at click position
+            const explosionGeometry = new THREE.BufferGeometry();
+            const explosionPositions = new Float32Array(100 * 3);
+            const explosionColors = new Float32Array(100 * 3);
+            
+            for (let i = 0; i < 100; i++) {
+                explosionPositions[i * 3] = (Math.random() - 0.5) * 10;
+                explosionPositions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+                explosionPositions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+                
+                const color = new THREE.Color();
+                color.setHSL(Math.random() * 0.3 + 0.5, 1, 0.7);
+                explosionColors[i * 3] = color.r;
+                explosionColors[i * 3 + 1] = color.g;
+                explosionColors[i * 3 + 2] = color.b;
+            }
+            
+            explosionGeometry.setAttribute('position', new THREE.BufferAttribute(explosionPositions, 3));
+            explosionGeometry.setAttribute('color', new THREE.BufferAttribute(explosionColors, 3));
+            
+            const explosionMaterial = new THREE.PointsMaterial({
+                size: 5,
+                vertexColors: true,
+                transparent: true,
+                opacity: 1,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const explosion = new THREE.Points(explosionGeometry, explosionMaterial);
+            explosion.position.set(
+                (event.clientX / window.innerWidth) * 100 - 50,
+                -(event.clientY / window.innerHeight) * 100 + 50,
+                0
+            );
+            scene.add(explosion);
+            
+            // Animate explosion
+            gsap.to(explosion.material, {duration: 2, opacity: 0});
+            gsap.to(explosion.scale, {duration: 2, x: 3, y: 3, z: 3});
+            setTimeout(() => scene.remove(explosion), 2000);
+        }
+
+        function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+            
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Resize canvases
+            if (matrixCanvas) {
+                matrixCanvas.width = window.innerWidth;
+                matrixCanvas.height = window.innerHeight;
+            }
+            if (neuralCanvas) {
+                neuralCanvas.width = window.innerWidth;
+                neuralCanvas.height = window.innerHeight;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            frameCount++;
+            
+            const currentTime = performance.now();
+            if (currentTime - lastTime >= 1000) {
+                fpsCounter = Math.round(frameCount * 1000 / (currentTime - lastTime));
+                document.getElementById('fps-counter').textContent = fpsCounter;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            const time = currentTime * 0.001;
+            
+            // Advanced particle system animation
+            if (window.particleSystem) {
+                window.particleSystem.rotation.x += 0.002;
+                window.particleSystem.rotation.y += 0.003;
+                
+                const positions = window.particleSystem.geometry.attributes.position.array;
+                const colors = window.particleSystem.geometry.attributes.color.array;
+                
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i + 1] += Math.sin(time + positions[i] * 0.01) * 0.1;
+                    
+                    // Dynamic color shifting
+                    const hue = (time * 0.1 + i * 0.001) % 1;
+                    const color = new THREE.Color();
+                    color.setHSL(hue, 1, 0.7);
+                    colors[i] = color.r;
+                    colors[i + 1] = color.g;
+                    colors[i + 2] = color.b;
+                }
+                
+                window.particleSystem.geometry.attributes.position.needsUpdate = true;
+                window.particleSystem.geometry.attributes.color.needsUpdate = true;
+            }
+            
+            // Animate DNA Helix
+            if (dnaHelix) {
+                dnaHelix.rotation.y += 0.01;
+                dnaHelix.position.y = Math.sin(time * 0.5) * 5;
+            }
+            
+            // Animate Neural Network
+            if (neuralNetwork) {
+                neuralNetwork.rotation.z += 0.005;
+                neuralNetwork.children.forEach((child, i) => {
+                    if (child.isMesh) {
+                        child.material.emissive.setHSL((time * 0.1 + i * 0.1) % 1, 0.5, 0.1);
+                    }
+                });
+            }
+            
+            // Animate Quantum Field
+            if (quantumField) {
+                quantumField.children.forEach((wave, i) => {
+                    wave.position.y = -20 + Math.sin(time * 2 + i * 0.1) * 3;
+                    wave.material.opacity = 0.3 + Math.sin(time * 3 + i * 0.2) * 0.2;
+                });
+            }
+            
+            // Animate Engineering Models
+            engineeringModels.forEach(model => {
+                if (model.userData.rotationSpeed) {
+                    model.rotation.z += model.userData.rotationSpeed;
+                } else {
+                    model.rotation.x += 0.01;
+                    model.rotation.y += 0.015;
+                }
+            });
+            
+            // Animate lights
+            geometries.forEach(obj => {
+                if (obj.isPointLight && obj.userData.originalPosition) {
+                    const phase = obj.userData.phase;
+                    obj.position.x = obj.userData.originalPosition.x + Math.cos(time + phase) * 20;
+                    obj.position.y = obj.userData.originalPosition.y + Math.sin(time * 0.7 + phase) * 15;
+                    obj.position.z = obj.userData.originalPosition.z + Math.sin(time * 0.5 + phase) * 10;
+                }
+            });
+            
+            // Enhanced camera movement
+            const targetX = mouseX * 0.3;
+            const targetY = mouseY * 0.3;
+            camera.position.x += (targetX - camera.position.x) * 0.02;
+            camera.position.y += (targetY - camera.position.y) * 0.02;
+            
+            // Camera orbital motion
+            const radius = 50;
+            camera.position.x += Math.cos(time * 0.1) * 0.5;
+            camera.position.z += Math.sin(time * 0.1) * 0.5;
+            camera.lookAt(scene.position);
+            
+            // Update HUD
+            document.getElementById('neural-activity').textContent = Math.random() > 0.5 ? 'LEARNING' : 'PROCESSING';
+            
+            renderer.render(scene, camera);
+        }
+
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            init();
+            
             // Add hover effects to feature cards
             const featureCards = document.querySelectorAll('.feature-card');
             featureCards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                    gsap.to(this, {duration: 0.3, scale: 1.05, y: -10});
                 });
                 
                 card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0) scale(1)';
+                    gsap.to(this, {duration: 0.3, scale: 1, y: 0});
                 });
             });
 
-            // Add click effect to construction icon
-            const constructionIcon = document.querySelector('.construction-icon');
-            constructionIcon.addEventListener('click', function() {
-                this.style.animation = 'none';
-                setTimeout(() => {
-                    this.style.animation = 'bounce 2s infinite';
-                }, 100);
-            });
+            // Animate elements on scroll
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsap.from('.logo h1', {duration: 1, y: -50, opacity: 0, ease: 'bounce.out'});
+            gsap.from('.logo p', {duration: 1, y: -30, opacity: 0, delay: 0.3});
+            gsap.from('.main-content', {duration: 1, scale: 0.8, opacity: 0, delay: 0.5});
         });
     </script>
 </body>
