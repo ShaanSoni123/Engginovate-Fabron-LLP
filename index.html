@@ -478,28 +478,6 @@
             100% { transform: scale(0.8) rotate(360deg); opacity: 0.3; }
         }
 
-        .engineering-hud {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 300px;
-            height: 200px;
-            background: rgba(0, 255, 0, 0.05);
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            border-radius: 5px;
-            padding: 10px;
-            font-family: 'Courier New', monospace;
-            color: #00ff00;
-            font-size: 12px;
-            z-index: 100;
-            animation: hudScan 4s infinite;
-        }
-
-        @keyframes hudScan {
-            0% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); }
-            50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.6); }
-            100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); }
-        }
 
         .matrix-rain {
             position: fixed;
@@ -518,16 +496,6 @@
     <canvas class="matrix-rain" id="matrix-canvas"></canvas>
     <canvas class="neural-network-bg" id="neural-canvas"></canvas>
     
-    <!-- Engineering HUD -->
-    <div class="engineering-hud">
-        <div style="color: #00ff00; font-weight: bold;">ENGGINOVATE SYSTEMS</div>
-        <div>STATUS: <span style="color: #00ff00;">ONLINE</span></div>
-        <div>PARTICLES: <span id="particle-count">1000</span></div>
-        <div>PERFORMANCE: <span id="fps-counter">60</span> FPS</div>
-        <div>NEURAL ACTIVITY: <span id="neural-activity">ACTIVE</span></div>
-        <div style="margin-top: 10px; color: #00d4ff;">3D ENGINE: INITIALIZED</div>
-        <div>QUANTUM FIELD: <span style="color: #ff00ff;">STABLE</span></div>
-    </div>
 
     <!-- Quantum Portals -->
     <div class="quantum-portal" style="top: 10%; left: 5%;"></div>
