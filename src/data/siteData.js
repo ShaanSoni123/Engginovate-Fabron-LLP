@@ -1,3 +1,5 @@
+import founderPhoto from "../assets/ForamSoni.jpg";
+
 export const company = {
   name: "Engginovate Fabaron LLP",
   location: "Surat, Gujarat, India",
@@ -127,8 +129,7 @@ export const founder = {
   name: "Foram Soni",
   title: "Founder & Managing Partner",
   tagline: "A Decade of Engineering Excellence",
-  image:
-    "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1000&q=80",
+  image: founderPhoto,
   previewIntro:
     "With over a decade of experience in industrial engineering and fabrication, Foram Soni leads Engginovate Fabaron LLP with a focus on precision, quality, and execution.",
   shortIntro:
