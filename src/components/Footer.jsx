@@ -24,12 +24,17 @@ function Footer() {
         <div>
           <h4 className="text-sm font-semibold uppercase tracking-wide text-[#F5F5F5]">Contact</h4>
           <p className="mt-4 text-sm text-[#F5F5F5]/85">Surat, Gujarat, India</p>
-          <p className="mt-1 text-sm text-[#F5F5F5]/85">info@engginovatefabaron.com</p>
-          <p className="mt-1 text-sm text-[#F5F5F5]/85">+91-00000-00000</p>
+          <p className="mt-1 text-sm text-[#F5F5F5]/85">foram@engginovate.com</p>
+          <p className="mt-1 text-sm text-[#F5F5F5]/85">+91 9879617226</p>
           <div className="mt-4 flex gap-3 text-xs">
-            <span className="rounded border border-white/30 px-3 py-1 text-[#F5F5F5]/90 transition hover:border-[#F97316] hover:text-[#F97316]">
+            <a
+              href="https://www.linkedin.com/company/engginovate-fabaron-llp/"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded border border-white/30 px-3 py-1 text-[#F5F5F5]/90 transition hover:border-[#F97316] hover:text-[#F97316]"
+            >
               LinkedIn
-            </span>
+            </a>
             <span className="rounded border border-white/30 px-3 py-1 text-[#F5F5F5]/90 transition hover:border-[#F97316] hover:text-[#F97316]">
               YouTube
             </span>

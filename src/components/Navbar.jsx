@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { company, navLinks } from "../data/siteData";
+import companyLogo from "../../Logo1.png";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -8,8 +9,9 @@ function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#0F3D2E]/10 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="text-lg font-bold tracking-tight text-[#0F3D2E]">
-          {company.name}
+        <Link to="/" className="flex items-center gap-3 text-lg font-bold tracking-tight text-[#0F3D2E]">
+          <img src={companyLogo} alt="Engginovate Fabaron LLP logo" className="h-11 w-11 rounded object-contain" />
+          <span>{company.name}</span>
         </Link>
         <button
           onClick={() => setOpen((prev) => !prev)}

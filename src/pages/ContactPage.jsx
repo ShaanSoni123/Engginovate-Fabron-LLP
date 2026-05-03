@@ -12,7 +12,9 @@ function ContactPage() {
       <div className="mt-10 grid gap-8 lg:grid-cols-2">
         <RevealSection className="rounded-xl border border-[#0F3D2E]/10 bg-[#F5F5F5] p-8 shadow-sm">
           <h2 className="text-2xl font-semibold text-[#0F3D2E]">Get in Touch</h2>
-          <p className="mt-4 text-[#6B7280]">Surat, Gujarat, India</p>
+          <p className="mt-4 text-[#6B7280]">
+            Plot No. 265, GIDC Bhatpore, Ta. Chorasi, Surat, Gujarat 394510, India
+          </p>
           <p className="mt-1 text-[#6B7280]">foram@engginovate.com</p>
 
           <form className="mt-8 space-y-4">
@@ -43,7 +45,7 @@ function ContactPage() {
         <RevealSection className="overflow-hidden rounded-xl border border-[#0F3D2E]/15 shadow-sm">
           <iframe
             title="Engginovate Fabaron LLP location"
-            src="https://maps.google.com/maps?q=Surat%2C%20Gujarat%2C%20India&t=&z=11&ie=UTF8&iwloc=&output=embed"
+            src="https://maps.google.com/maps?q=Engginovate%20Fabaron%20LLP%2C%20Plot%20No.%20265%2C%20GIDC%20Bhatpore%2C%20Ta.%20Chorasi%2C%20Surat%2C%20Gujarat%20394510&t=&z=15&ie=UTF8&iwloc=&output=embed"
             className="h-full min-h-[500px] w-full"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

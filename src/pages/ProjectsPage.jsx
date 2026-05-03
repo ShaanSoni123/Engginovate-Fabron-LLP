@@ -3,7 +3,7 @@ import ProjectCard from "../components/ProjectCard";
 import RevealSection from "../components/RevealSection";
 import { projects } from "../data/siteData";
 
-const filters = ["All", "Energy", "Industrial", "EPC"];
+const filters = ["All", "Industrial", "Consultancy", "Designing & Construction"];
 
 function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -19,7 +19,7 @@ function ProjectsPage() {
         <p className="corp-title text-sm font-semibold uppercase tracking-widest">Projects</p>
         <h1 className="mt-3 text-4xl font-bold text-[#1F2937]">Portfolio Of Industrial Delivery</h1>
         <p className="mt-6 max-w-3xl text-[#6B7280]">
-          Explore key assignments across energy infrastructure, industrial fabrication, and turnkey EPC solutions.
+          Explore assignments across industrial programs, specialist consultancy, and end-to-end designing and construction delivery.
         </p>
         <div className="mt-4 h-1 w-20 rounded bg-[#0F3D2E]" />
       </RevealSection>
